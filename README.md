@@ -1,8 +1,8 @@
-# 🌌 Ascent Skyblock
+# 🌌  Skyblock
 
-![Ascent Skyblock Banner](ascent_skyblock_banner_1778785585319.png)
+![Skyblock Banner](ascent_skyblock_banner_1778785585319.png)
 
-Welcome to **Ascent Skyblock**, a high-fidelity, high-performance Skyblock implementation for Minestom. This project aims to replicate and enhance the core mechanics of modern Skyblock servers with a modular, scalable architecture.
+Welcome to **Skyblock**, a high-fidelity, high-performance Skyblock implementation for Minestom. This project aims to replicate and enhance the core mechanics of modern Skyblock servers with a modular, scalable architecture.
 
 ---
 
@@ -19,7 +19,7 @@ Welcome to **Ascent Skyblock**, a high-fidelity, high-performance Skyblock imple
 
 ## 🏗️ Project Architecture
 
-Ascent Skyblock is built as a distributed system of specialized microservices and game servers.
+Skyblock is built as a distributed system of specialized microservices and game servers.
 
 ```mermaid
 graph TD
@@ -93,4 +93,4 @@ Ascent is designed with **Aesthetics** and **Performance** in mind. Every intera
 
 ---
 
-Developed with ❤️ by the **Ascent Dev Team**.
+Developed with ❤️ by the Pero.
