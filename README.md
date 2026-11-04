@@ -1,8 +1,8 @@
-# 🌌  Skyblock
+# 🌌 Hydropixel Skyblock
 
-![Skyblock Banner](ascent_skyblock_banner_1778785585319.png)
+![Hydropixel Skyblock Banner](hydropixel_skyblock_banner_1778785585319.png)
 
-Welcome to **Skyblock**, a high-fidelity, high-performance Skyblock implementation for Minestom. This project aims to replicate and enhance the core mechanics of modern Skyblock servers with a modular, scalable architecture.
+Welcome to **Hydropixel Skyblock**, a high-fidelity, high-performance Skyblock implementation for Minestom. This project aims to replicate and enhance the core mechanics of modern Skyblock servers with a modular, scalable architecture.
 
 ---
 
@@ -19,7 +19,7 @@ Welcome to **Skyblock**, a high-fidelity, high-performance Skyblock implementati
 
 ## 🏗️ Project Architecture
 
-Skyblock is built as a distributed system of specialized microservices and game servers.
+Hydropixel Skyblock is built as a distributed system of specialized microservices and game servers.
 
 ```mermaid
 graph TD
@@ -68,8 +68,8 @@ graph TD
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/HajimeOnodera/Ascent.git
-   cd Ascent
+   git clone https://github.com/Pero-Gamer-Dev/Hydropixel.git
+   cd Hydropixel
    ```
 
 2. **Build the project**:
@@ -86,11 +86,15 @@ graph TD
 
 ## 🎨 Design Philosophy
 
-Ascent is designed with **Aesthetics** and **Performance** in mind. Every interaction, from the block breaking particles to the action bar XP gain, is optimized for a premium player experience.
+Hydropixel is designed with **Aesthetics** and **Performance** in mind. Every interaction, from the block breaking particles to the action bar XP gain, is optimized for a premium player experience.
 
 > [!TIP]
 > Use the `/itemlist` command in-game to browse all registered Skyblock items and test the drop system!
 
 ---
 
-Developed with ❤️ by the Pero.
+Developed with ❤️ by the **Pero**.
+
+---
+
+**Made by Pero.**

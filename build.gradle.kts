@@ -4,7 +4,7 @@ plugins {
 }
 
 allprojects {
-    group = "fun.ascent"
+    group = "fun.hydropixel"
     version = "1.1.1"
 
     repositories {

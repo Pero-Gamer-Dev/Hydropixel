@@ -1,4 +1,4 @@
-rootProject.name = "ascent"
+rootProject.name = "hydropixel"
 include(":commons")
 include(":database")
 include(":core-skyblock")
