@@ -1,0 +1,20 @@
+package fun.hydropixel.skyblock.hotm.upgrade;
+
+import fun.hydropixel.skyblock.hotm.HotmUpgrade;
+import fun.hydropixel.skyblock.hotm.Powder;
+import java.util.List;
+
+public final class QuickForge extends HotmUpgrade {
+    @Override public String id() { return "QUICK_FORGE"; }
+    @Override public String name() { return "Quick Forge"; }
+    @Override public int maxLevel() { return 20; }
+    @Override public int tierRequirement() { return 2; }
+    @Override public Powder powder(int l) { return Powder.MITHRIL; }
+    @Override public int cost(int l) { return (int) Math.pow(l + 2, 4); }
+    @Override public List<String> buildLore(int l) {
+        double reduction = Math.min(30, 10 + l * 0.5 + ((double) l / 20) * 20);
+        return List.of("<gray>Decreases the time it takes to forge by <green>" +
+            String.format("%.1f", reduction) + "%<gray>.");
+    }
+}
+

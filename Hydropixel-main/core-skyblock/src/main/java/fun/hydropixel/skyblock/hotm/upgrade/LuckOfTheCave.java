@@ -1,0 +1,18 @@
+package fun.hydropixel.skyblock.hotm.upgrade;
+
+import fun.hydropixel.skyblock.hotm.HotmUpgrade;
+import fun.hydropixel.skyblock.hotm.Powder;
+import java.util.List;
+
+public final class LuckOfTheCave extends HotmUpgrade {
+    @Override public String id() { return "LUCK_OF_THE_CAVE"; }
+    @Override public String name() { return "Luck of the Cave"; }
+    @Override public int maxLevel() { return 45; }
+    @Override public int tierRequirement() { return 3; }
+    @Override public Powder powder(int l) { return Powder.MITHRIL; }
+    @Override public int cost(int l) { return (int) Math.pow(l + 2, 3.07); }
+    @Override public List<String> buildLore(int l) {
+        return List.of("<gray>Increases the chance for you to trigger rare occurrences in <dark_green>Dwarven Mines <gray>by <green>" + (l + 5) + "%<gray>.");
+    }
+}
+

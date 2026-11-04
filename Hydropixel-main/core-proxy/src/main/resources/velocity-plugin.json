@@ -1,0 +1,9 @@
+{
+  "id": "hydropixel-proxy",
+  "name": "Hydropixel Proxy",
+  "version": "1.0.0",
+  "main": "fun.hydropixel.proxy.CoreProxy",
+  "authors": [
+    "Hydropixel"
+  ]
+}

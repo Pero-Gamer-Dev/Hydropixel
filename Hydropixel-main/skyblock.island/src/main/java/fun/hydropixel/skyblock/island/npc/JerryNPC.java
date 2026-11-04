@@ -1,0 +1,56 @@
+package fun.hydropixel.skyblock.island.npc;
+
+import fun.hydropixel.common.npc.HydropixelNpc;
+import fun.hydropixel.common.npc.NpcDefinition;
+import fun.hydropixel.common.npc.NpcType;
+import fun.hydropixel.skyblock.events.JerryClickedEvent;
+import fun.hydropixel.skyblock.island.gui.GUIJerry;
+import fun.hydropixel.skyblock.player.SkyblockPlayer;
+import fun.hydropixel.skyblock.world.WorldHandler;
+import net.minestom.server.MinecraftServer;
+import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
+import net.minestom.server.instance.Instance;
+
+public record JerryNPC(Instance instance) implements NpcDefinition {
+
+    @Override
+    public String id() {
+        String worldId = instance.getTag(WorldHandler.worldID);
+        return "jerry_" + (worldId != null ? worldId : "unknown");
+    }
+
+    @Override
+    public String name() {
+        return "<white>Jerry</white>";
+    }
+
+    @Override
+    public NpcType type() {
+        return NpcType.VILLAGER;
+    }
+
+    @Override
+    public Pos position() {
+        return new Pos(9.5, 100, 34, 180, 0);
+    }
+
+    @Override
+    public String[] holograms() {
+        return new String[] {
+            "<gold><bold>NEW UPDATE", "<white>Jerry", CLICK
+        };
+    }
+
+    @Override
+    public void onInteract(Player player, HydropixelNpc npc) {
+        if (player instanceof SkyblockPlayer sp) {
+            if (sp.getActiveProfileData() != null && sp.getActiveProfileData().getQuestData().isCurrentlyActive("talk_to_jerry")) {
+                MinecraftServer.getGlobalEventHandler().call(new JerryClickedEvent(sp));
+                return;
+            }
+            MinecraftServer.getGlobalEventHandler().call(new JerryClickedEvent(sp));
+        }
+        new GUIJerry().open(player);
+    }
+}

@@ -1,0 +1,59 @@
+package fun.hydropixel.lobby.npc;
+
+import fun.hydropixel.common.npc.HydropixelNpc;
+import fun.hydropixel.common.npc.NpcDefinition;
+import fun.hydropixel.common.npc.NpcSkin;
+import fun.hydropixel.common.redis.ServerLookup;
+import fun.hydropixel.common.util.ProxyTransfer;
+import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
+import net.minestom.server.instance.Instance;
+
+import static fun.hydropixel.common.StringUtility.text;
+
+public record SkyblockNPC(Instance instance) implements NpcDefinition {
+
+    private static final String TARGET_PREFIX = "skyblock";
+
+    @Override
+    public String id() {
+        return "lobby_skyblock";
+    }
+
+    @Override
+    public String name() {
+        return "<gold>SkyBlock</gold>";
+    }
+
+    @Override
+    public NpcSkin skin() {
+        return new NpcSkin(
+                "ewogICJ0aW1lc3RhbXAiIDogMTYyMzA0MDQ3NTQ5NCwKICAicHJvZmlsZUlkIiA6ICIzYzdiZDE4ODc2OTU0OWVlODk0ZmIyMjJiZDc5YWVjYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJZZ2dkcmFzaWw4MCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81MmUxNWMyZDdjZmRkMzAwOGRkNzkwYjJmODkxNzVjNzNkNWU3NzYyN2FmNjUzZmMxOGU5ZmNjOGI5NmFkZjg0IgogICAgfQogIH0KfQ==",
+                "LVMIfsjQBFjAaMwLvQBIjW3j/V1mbCzEbYN5j4nVOATTDXIOdHDqtOXHRiBE9xcFZLqHsM/LF4j8VZ4/HQPgBivK/7v72U/nvnUMwZq3tChVvcGpwrv6V4NgAf0JYoNe7F3aqSEwx25xbWpsGx39qZ6LO6xGRtVEjXhoXGwL7kpaOn+XF3L+E5/d9aMh0CAfvyuM94hhoB9HCG2J9hzsRPm3V7C66IQ2n+AlPSwBYAzOAj3wQRdz6ipWOvyRpk9siQ/1T5tD+RC8Flwy5o2/0zP9AWLORmbpqe3zSf2r06iMx1LLy6odiMe6LeiC/FTNiu96hatQDzv8OQ2VQAg5mEkv1HyXgGvVbYQcGB5SNiepXkxHdtfyshBewEFR0f0XC8nMlN0sgaJl0Iycr+4+oCFnvGTufKNnnzFxQhU9CknSQnWFyxdFhefUtHUPxtCLnxnexwDIqItL40bafbMEpDQhJSOWSu97vcTbc0yDdTUbLZAVTzO+/wmf4M594i6e1ykFn/WtLiOi58/qdCN2Fwja5QX+e0rKflNl7Yci5RGWgGsKzK471FmzyIGesXfwwQTiy1k/rGCID2rstGa57s1HXFOBuh0g7nwCl9gDo/XokHzYXF5khmKIvxrusC6Bstsg2jy1drW7BgKCyN400BYXb+JxS0Dt0V3WNTslMUQ="
+        );
+    }
+
+    @Override
+    public Pos position() {
+        return new Pos(-25.5, 93, -1.5, 90, 0);
+    }
+
+    @Override
+    public String[] holograms() {
+        return new String[] {
+                "<gold>SkyBlock</gold>",
+                CLICK
+        };
+    }
+
+    @Override
+    public void onInteract(Player player, HydropixelNpc npc) {
+        String serverName = ServerLookup.findAnyByPrefix(TARGET_PREFIX);
+        if (serverName == null) {
+            player.sendMessage(text(text("<red>No SkyBlock server is currently online!")));
+            return;
+        }
+        ProxyTransfer.send(player, serverName);
+    }
+}
+

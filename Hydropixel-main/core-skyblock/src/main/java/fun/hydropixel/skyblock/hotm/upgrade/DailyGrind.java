@@ -1,0 +1,22 @@
+package fun.hydropixel.skyblock.hotm.upgrade;
+
+import fun.hydropixel.skyblock.hotm.HotmUpgrade;
+import fun.hydropixel.skyblock.hotm.Powder;
+import java.util.List;
+
+public final class DailyGrind extends HotmUpgrade {
+    @Override public String id() { return "DAILY_GRIND"; }
+    @Override public String name() { return "Daily Grind"; }
+    @Override public int maxLevel() { return 100; }
+    @Override public int tierRequirement() { return 8; }
+    @Override public Powder powder(int l) { return Powder.GLACIAL; }
+    @Override public int cost(int l) { return 200 + (l - 1) * 18; }
+    @Override public List<String> buildLore(int l) {
+        int bonus = (200 + (l - 1) * 18) * 2;
+        return List.of(
+            "<gray>Gain <green>" + fmt(bonus) + " <aqua>Glacial Powder <gray>from the first",
+            "<gray>ore you mine each day in <aqua>Glacite Tunnels<gray>."
+        );
+    }
+}
+

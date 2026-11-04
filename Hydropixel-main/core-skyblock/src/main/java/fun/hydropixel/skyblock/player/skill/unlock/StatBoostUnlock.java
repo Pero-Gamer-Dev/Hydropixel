@@ -1,0 +1,33 @@
+package fun.hydropixel.skyblock.player.skill.unlock;
+
+import fun.hydropixel.skyblock.player.SkyblockPlayer;
+import fun.hydropixel.skyblock.player.stats.Stats;
+
+public class StatBoostUnlock extends SkillUnlock {
+
+    private final Stats stat;
+    private final int amount;
+    private final boolean percentage;
+
+    public StatBoostUnlock(Stats stat, int amount) {
+        this(stat, amount, false);
+    }
+
+    public StatBoostUnlock(Stats stat, int amount, boolean percentage) {
+        this.stat = stat;
+        this.amount = amount;
+        this.percentage = percentage;
+    }
+
+    @Override
+    public String display() {
+        String suffix = percentage ? "%" : "";
+        return "<dark_gray>+<green>" + amount + suffix + " " + stat.getStatColor() + stat.getStatFormattedDisplay();
+    }
+
+    @Override
+    public void apply(SkyblockPlayer player) {
+        if (player.getActiveProfileData() == null) return;
+        player.getActiveProfileData().addToStat(stat, amount);
+    }
+}

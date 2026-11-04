@@ -1,0 +1,90 @@
+package fun.hydropixel.skyblock.player.skill.listener;
+
+import fun.hydropixel.skyblock.events.EventManager;
+import fun.hydropixel.skyblock.events.SEvent;
+import fun.hydropixel.skyblock.player.SkyblockPlayer;
+import fun.hydropixel.skyblock.player.actionbar.ActionBar;
+import fun.hydropixel.skyblock.player.profiles.ProfilePlayer;
+import fun.hydropixel.skyblock.player.skill.SkillReward;
+import fun.hydropixel.skyblock.player.skill.SkillType;
+import fun.hydropixel.skyblock.player.skill.event.SkillXpGainEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+
+import java.util.Locale;
+
+import static fun.hydropixel.common.StringUtility.text;
+
+public class SkillListeners {
+
+    public static void register() {
+        EventManager.registerEvent(new SEvent<SkillXpGainEvent>() {
+            @Override
+            public void onEvent(SkillXpGainEvent event) {
+                handleXpDisplay(event);
+            }
+        });
+
+        EventManager.registerEvent(new SEvent<SkillXpGainEvent>() {
+            @Override
+            public void onEvent(SkillXpGainEvent event) {
+                if (!event.leveledUp()) return;
+                handleLevelUp(event);
+            }
+        });
+    }
+
+    private static void handleXpDisplay(SkillXpGainEvent event) {
+        SkyblockPlayer player = event.player();
+        ProfilePlayer profileData = player.getActiveProfileData();
+        if (profileData == null) return;
+
+        SkillType type = event.skillType();
+        double gained = event.xpGained();
+
+        String xpStr = gained % 1 == 0 ? String.format(Locale.US, "%.0f", gained) : String.format(Locale.US, "%.1f", gained);
+        double progress = profileData.skillData.getProgressToNextLevel(type);
+        String pctStr = String.format(Locale.US, "%.2f", progress * 100) + "%";
+
+        ActionBar.of(player.getUuid()).addReplacement(
+                ActionBar.Section.DEFENSE,
+                "<dark_aqua>+" + xpStr + " " + type.getDisplayName() + " (" + pctStr + ")",
+                60, 10
+        );
+    }
+
+    private static void handleLevelUp(SkillXpGainEvent event) {
+        SkyblockPlayer player = event.player();
+        SkillType type = event.skillType();
+        int newLevel = event.newLevel();
+
+        String border = "<dark_aqua><bold>" + "▬".repeat(38);
+        String oldRoman = SkillReward.toRoman(event.oldLevel());
+        String newRoman = SkillReward.toRoman(newLevel);
+
+        String arrow = oldRoman.isEmpty() ? "<yellow>" + newRoman : oldRoman + "<dark_gray>➜<yellow>" + newRoman;
+
+        player.sendMessage(border);
+
+        Component levelMsg = text("  <aqua><bold>SKILL LEVEL UP <dark_aqua>" + type.getDisplayName() + " <dark_gray>" + arrow)
+                .hoverEvent(HoverEvent.showText(text("<yellow>Click to view your " + type.getDisplayName() + " progress")))
+                .clickEvent(ClickEvent.runCommand("/skills " + type.name().toLowerCase(Locale.ROOT)));
+
+        player.sendMessage(levelMsg);
+
+        SkillReward reward = type.definition().rewardAt(newLevel);
+        if (reward != null && !reward.unlocks().isEmpty()) {
+            player.sendMessage(" ");
+            player.sendMessage(text("  <green><bold>REWARDS"));
+            reward.unlocks().forEach(unlock -> player.sendMessage(text("    " + unlock.display())));
+        } else {
+            player.sendMessage(" ");
+            player.sendMessage(text("  <green><bold>REWARDS"));
+            player.sendMessage(text("    <gray>No rewards"));
+        }
+
+        player.sendMessage(border);
+    }
+}
+

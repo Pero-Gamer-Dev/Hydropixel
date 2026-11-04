@@ -1,0 +1,22 @@
+package fun.hydropixel.skyblock.hotm.upgrade;
+
+import fun.hydropixel.skyblock.hotm.HotmUpgrade;
+import fun.hydropixel.skyblock.hotm.Powder;
+import java.util.List;
+
+public final class Mole extends HotmUpgrade {
+    @Override public String id() { return "MOLE"; }
+    @Override public String name() { return "Mole"; }
+    @Override public int maxLevel() { return 190; }
+    @Override public int tierRequirement() { return 6; }
+    @Override public Powder powder(int l) { return Powder.GEMSTONE; }
+    @Override public int cost(int l) { return (int) Math.pow(l + 2, 2.2); }
+    @Override public List<String> buildLore(int l) {
+        int raw = 50 + (l - 1) * 5;
+        int blocks = raw / 100 + 1;
+        int chance = raw - (blocks - 1) * 100;
+        return List.of("<gray>When mining hard stone, you have a <green>" + chance +
+            "%<gray> chance to mine <green>" + blocks + " <gray>adjacent hard stone block" + (blocks > 1 ? "s" : "") + "<gray>.");
+    }
+}
+

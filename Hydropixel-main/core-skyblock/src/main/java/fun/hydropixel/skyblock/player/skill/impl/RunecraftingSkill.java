@@ -1,0 +1,33 @@
+package fun.hydropixel.skyblock.player.skill.impl;
+
+import fun.hydropixel.skyblock.player.skill.SkillDefinition;
+import fun.hydropixel.skyblock.player.skill.SkillReward;
+import fun.hydropixel.skyblock.player.skill.unlock.XpBoostUnlock;
+import net.minestom.server.item.Material;
+
+import java.util.List;
+
+public class RunecraftingSkill extends SkillDefinition {
+
+    private static final SkillReward[] REWARDS;
+
+    static {
+        int[] table = runecraftingTable();
+        REWARDS = new SkillReward[25];
+        for (int i = 0; i < 25; i++) {
+            int level = i + 1;
+            REWARDS[i] = new SkillReward(level, table[i], new XpBoostUnlock(level <= 5 ? 1 : level <= 15 ? 2 : 3));
+        }
+    }
+
+    @Override public String name() { return "Runecrafting"; }
+    @Override public Material icon() { return Material.MAGMA_CREAM; }
+    @Override public List<String> description() {
+        return List.of(
+                "<gray>Sacrifice runes at the Runic",
+                "<gray>Pedestal to gain Runecrafting",
+                "<gray>XP and unlock higher tier runes."
+        );
+    }
+    @Override public SkillReward[] rewards() { return REWARDS; }
+}

@@ -1,0 +1,188 @@
+package fun.hydropixel.lobby.gui;
+
+import fun.hydropixel.common.gui.InventoryGUI;
+import fun.hydropixel.common.gui.RefreshingGUI;
+import fun.hydropixel.common.item.GUIClickableItem;
+import fun.hydropixel.common.item.ItemStackCreator;
+import fun.hydropixel.common.redis.ServerLookup;
+import fun.hydropixel.common.redis.ServerPing;
+import fun.hydropixel.lobby.cache.ServerInfoCache;
+import fun.hydropixel.lobby.game.GameType;
+import fun.hydropixel.common.util.ProxyTransfer;
+import net.kyori.adventure.text.Component;
+import net.minestom.server.entity.Player;
+import net.minestom.server.event.inventory.InventoryPreClickEvent;
+import net.minestom.server.inventory.InventoryType;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
+import net.minestom.server.network.player.ResolvableProfile;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static fun.hydropixel.common.StringUtility.*;
+import static net.minestom.server.component.DataComponents.*;
+
+public class GameMenuGUI extends InventoryGUI implements RefreshingGUI {
+    private static final int[] GAME_SLOTS = {
+            10, 11, 12, 13, 14, 15, 16,
+            21,     23,
+            28, 29, 30, 31, 32, 33, 33,
+            37, 38, 39, 40, 41, 42, 43
+    };
+
+    private int cycleIndex = 0;
+
+    public GameMenuGUI() {
+        super("Game Menu", InventoryType.CHEST_6_ROW);
+    }
+
+    @Override
+    public void onOpen(InventoryGUIOpenEvent e) {
+        Player player = e.player();
+
+        set(new GUIClickableItem(4) {
+            @Override
+            public void run(InventoryPreClickEvent e, Player player) {
+
+            }
+
+            @Override
+            public ItemStack.Builder getItem(Player player) {
+                return ItemStackCreator.getStack("<green>Main Lobby",
+                        Material.BOOKSHELF, 1,
+                        "",
+                        "<gray>Return to the Main Lobby.");
+            }
+        });
+
+        // Refresh cache, then populate items
+        ServerInfoCache.refreshCache().thenAccept(_ -> {
+            int i = 0;
+            for (GameType game : GameType.values()) {
+                if (i >= GAME_SLOTS.length) break;
+                set(createGameItem(game, GAME_SLOTS[i++]));
+            }
+            set(createRandomGameItem());
+            updateItemStacks(getInventory(), player);
+        });
+
+        updateItemStacks(getInventory(), player);
+    }
+
+    private GUIClickableItem createGameItem(GameType game, int slot) {
+        return new GUIClickableItem(slot) {
+            @Override
+            public ItemStack.Builder getItem(Player player) {
+                String playerCount = commaify(game.getPlayerCount());
+                ItemStack.Builder itemBuilder = ItemStackCreator.getFromStack(game.getItem().build());
+
+                List<String> lore = new ArrayList<>();
+                lore.add("<dark_gray>" + toNormalCase(game.getCategory().name()));
+                lore.add("");
+                lore.addAll(Arrays.asList(game.getLore()));
+                lore.add("");
+                if (game.isImplemented()) {
+                    if (cycleIndex % 2 == 0) {
+                        lore.add("<green>  Click to Connect!");
+                    } else {
+                        lore.add("<green>► Click to Connect!");
+                    }
+                    lore.add("<gray>" + playerCount + " currently playing!");
+                }
+
+                return ItemStackCreator.appendLore(itemBuilder, lore).customName(
+                        text("<green>" + game.getDisplayName())
+                );
+            }
+
+            @Override
+            public void run(InventoryPreClickEvent e, Player player) {
+                if (!game.isImplemented()) {
+                    player.sendMessage(text("<red>This game is not yet available!"));
+                    return;
+                }
+                
+                List<ServerPing> servers = ServerLookup.findByPrefix(game.getServerPrefix());
+                if (servers.isEmpty()) {
+                    player.sendMessage(text("<red>" + game.getDisplayName() + " is currently offline!"));
+                    return;
+                }
+                
+                player.closeInventory();
+                ProxyTransfer.send(player, servers.getFirst().serverName());
+            }
+        };
+    }
+
+    private GUIClickableItem createRandomGameItem() {
+        GameType displayGame = GameType.values()[cycleIndex % GameType.values().length];
+        return new GUIClickableItem(49) {
+            @Override
+            public ItemStack.Builder getItem(Player player) {
+                ItemStack base = displayGame.getItem().build();
+                ItemStack.Builder builder = ItemStack.builder(base.material())
+                        .amount(1)
+                        .customName(text("<green>Random Game"))
+                        .lore(text("<gray>Join a random game."),
+                                Component.empty(),
+                                text("<yellow>Click to Play"));
+
+                // Copy head texture if present
+                ResolvableProfile profile = base.get(PROFILE);
+                if (profile != null) {
+                    builder.set(PROFILE, profile);
+                }
+
+                return builder;
+            }
+
+            @Override
+            public void run(InventoryPreClickEvent e, Player player) {
+                List<GameType> implemented = Arrays.stream(GameType.values())
+                        .filter(GameType::isImplemented)
+                        .toList();
+                if (implemented.isEmpty()) {
+                    player.sendMessage(text("<red>No games available!"));
+                    return;
+                }
+                GameType random = implemented.get(
+                        ThreadLocalRandom.current().nextInt(implemented.size())
+                );
+                
+                List<ServerPing> servers = ServerLookup.findByPrefix(random.getServerPrefix());
+                if (servers.isEmpty()) {
+                    player.sendMessage(text("<red>" + random.getDisplayName() + " is currently offline!"));
+                    return;
+                }
+
+                player.closeInventory();
+                ProxyTransfer.send(player, servers.getFirst().serverName());
+            }
+        };
+    }
+
+    @Override
+    public void refreshItems(Player player) {
+        cycleIndex++;
+        set(createRandomGameItem());
+    }
+
+    @Override
+    public int refreshRate() {
+        return 10; // 0.5 seconds
+    }
+
+    @Override
+    public boolean allowHotkeying() {
+        return false;
+    }
+
+    @Override
+    public void onBottomClick(InventoryPreClickEvent e) {
+        e.setCancelled(true);
+    }
+}
+

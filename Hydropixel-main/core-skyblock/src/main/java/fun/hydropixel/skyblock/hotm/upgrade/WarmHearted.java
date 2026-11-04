@@ -1,0 +1,18 @@
+package fun.hydropixel.skyblock.hotm.upgrade;
+
+import fun.hydropixel.skyblock.hotm.HotmUpgrade;
+import fun.hydropixel.skyblock.hotm.Powder;
+import java.util.List;
+
+public final class WarmHearted extends HotmUpgrade {
+    @Override public String id() { return "WARM_HEARTED"; }
+    @Override public String name() { return "Warm Hearted"; }
+    @Override public int maxLevel() { return 50; }
+    @Override public int tierRequirement() { return 8; }
+    @Override public Powder powder(int l) { return Powder.GLACIAL; }
+    @Override public int cost(int l) { return (int) Math.pow(l + 1, 3.1); }
+    @Override public List<String> buildLore(int l) {
+        return List.of("<gray>Grants <green>+" + String.format("%.1f", l * 0.2) + " <aqua>❄ Cold Resistance<gray>.");
+    }
+}
+

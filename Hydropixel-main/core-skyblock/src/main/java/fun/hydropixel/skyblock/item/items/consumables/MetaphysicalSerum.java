@@ -1,0 +1,23 @@
+package fun.hydropixel.skyblock.item.items.consumables;
+
+import fun.hydropixel.skyblock.item.SkyblockItem;
+import fun.hydropixel.skyblock.item.items.ItemDefinition;
+
+public class MetaphysicalSerum implements ItemDefinition {
+    public String getItemId() {
+        return "METAPHYSICAL_SERUM";
+    }
+
+    @Override
+    public SkyblockItem.Builder apply(SkyblockItem.Builder builder) {
+        return builder
+                .description("Drinking this serum shortens",
+                        "the chain required for &dSuperpairs",
+                        "add-on experiments by <green>1<gray>.",
+                        " ",
+                        "You may drink up to <green>3<gray> doses",
+                        "of the serum before the taste",
+                        "becomes to abstract.");
+    }
+}
+

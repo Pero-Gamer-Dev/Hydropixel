@@ -1,0 +1,18 @@
+package fun.hydropixel.skyblock.hotm.upgrade;
+
+import fun.hydropixel.skyblock.hotm.HotmUpgrade;
+import fun.hydropixel.skyblock.hotm.Powder;
+import java.util.List;
+
+public final class MiningMadness extends HotmUpgrade {
+    @Override public String id() { return "MINING_MADNESS"; }
+    @Override public String name() { return "Mining Madness"; }
+    @Override public int maxLevel() { return 1; }
+    @Override public int tierRequirement() { return 4; }
+    @Override public Powder powder(int l) { return Powder.MITHRIL; }
+    @Override public int cost(int l) { return 8; }
+    @Override public List<String> buildLore(int l) {
+        return List.of("<gray>Grants <green>+50 <gold>⸕ Mining Speed <gray>and <green>+50 <gold>☘ Mining Fortune<gray>.");
+    }
+}
+
